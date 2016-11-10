@@ -14,19 +14,19 @@ class LinksViewController: UITableViewController, SFSafariViewControllerDelegate
     
     var links: Array<String> {
         get {
-            let linksFromUserDefaults = UserDefaults.standard.object(forKey: userDefaultsKey)
+            let linksFromUserDefaults = NSUserDefaults.standardUserDefaults().objectForKey(userDefaultsKey)
             return linksFromUserDefaults as! Array<String>
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: userDefaultsKey)
+            NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: userDefaultsKey)
         }
     }
     
-    @IBAction func tappedAddButton(_ sender: AnyObject) {
-        let alertController = UIAlertController(title: "New Link", message: "Add link to save for later.", preferredStyle: .alert)
+    @IBAction func tappedAddButton(sender: AnyObject) {
+        let alertController = UIAlertController(title: "New Link", message: "Add link to save for later.", preferredStyle: .Alert)
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        let addAction = UIAlertAction(title: "Add", style: .default) { (action) in
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        let addAction = UIAlertAction(title: "Add", style: .Default) { (action) in
             if let link = alertController.textFields?.first?.text {
                 self.links.append(link)
                 self.tableView.reloadData()
@@ -36,38 +36,38 @@ class LinksViewController: UITableViewController, SFSafariViewControllerDelegate
         alertController.addAction(cancelAction)
         alertController.addAction(addAction)
         
-        alertController.addTextField { (textField) in
+        alertController.addTextFieldWithConfigurationHandler { (textField) in
             textField.placeholder = "Link"
             textField.keyboardType = .URL
         }
         
-        present(alertController, animated: true, completion: nil)
+        presentViewController(alertController, animated: true, completion: nil)
         
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return links.count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "LinkCell", for: indexPath)
-        cell.textLabel?.text = links[(indexPath as NSIndexPath).row]
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("LinkCell", forIndexPath: indexPath)
+        cell.textLabel?.text = links[indexPath.row]
         
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        openURL(links[(indexPath as NSIndexPath).row])
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        openURL(links[indexPath.row])
     }
     
-    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        controller.dismiss(animated: true, completion: nil)
+    func safariViewControllerDidFinish(controller: SFSafariViewController) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func openURL(_ urlString: String) {
-        let url = URL(string: urlString)!
-        let safariViewController = SFSafariViewController(url: url)
+    func openURL(urlString: String) {
+        let url = NSURL(string: urlString)!
+        let safariViewController = SFSafariViewController(URL: url)
         safariViewController.delegate = self
-        self.present(safariViewController, animated: true, completion: nil)
+        self.presentViewController(safariViewController, animated: true, completion: nil)
     }
 }
